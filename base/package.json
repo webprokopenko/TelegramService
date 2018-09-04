@@ -1,15 +1,16 @@
 {
-  "name": "dnmonster",
+  "name": "tele-message",
   "version": "0.1.0",
   "description": "Node server for KevinGaudin's monsterids",
-  "main": "./server.js",
+  "main": "./src/server.js",
   "dependencies": {
-    "node-telegram-bot-api": "^0.30.0"
+    "node-telegram-bot-api": "^0.30.0",
+    "express": "^4.16.3"
   },
   "devDependencies": {},
   "scripts": {
     "start": "nodemon app.js"
   },
   "author": "Adrian Mouat",
-  "license": "BSD"
+  "license": "UNLICENSED"
 }

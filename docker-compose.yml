@@ -6,11 +6,10 @@ services:
         context: ./
         dockerfile: ./Dockerfile
       user: "node"
-      working_dir: /home/node/app
       environment:
         - NODE_ENV=production
       volumes:
-        - ./src:/home/node/app
+        - ./src:/home/node/app/src
       expose:
         - "8082"
       ports:

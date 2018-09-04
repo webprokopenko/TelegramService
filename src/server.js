@@ -1,93 +1,29 @@
-var http = require('http');
-var url = require('url');
-const config = require('./config.json');
+var express = require("express");
+var app = express();
 
+const config = require('./config/config.json');
 const telegramBot = require('node-telegram-bot-api');
 let botError = new telegramBot(config.telegram_token, {polling: true});
 
-var server = new http.Server(function(req, res) {
+const Status = {
+    NOT_FOUND: 404,
+    NOT_FOUND_MSG: '404 - Resource Not found',
+    OK: 200,
+    OK_MSG: '200 - Success',
+    SERVER_ERROR: 500,
+    SERVER_ERROR_MSG: '500 - Battery Error'
+};
 
-    var urlParsed = url.parse(req.url, true);
+app.get("/message", function(req, res){
 
-    var date = new Date();
-    console.log(urlParsed.query.content);
-    console.log( date.getSeconds() );
-
-    if (urlParsed.pathname == '/message' && urlParsed.query.content) {
-
-        // botError.sendMessage(config.telegram_chat_id,
-        //     urlParsed.query.content);
-        res.setHeader('Cache-control', 'no-cache,no-store,must-revalidate');
-        res.setHeader('Content-Type', 'text/html; charset=utf-8');
-        res.end( urlParsed.query.content );
-
+    if (req.query.content) {
+        botError.sendMessage(config.telegram_chat_id, req.query.content);
+        response.status(Status.OK).json(Status.OK_MSG);
     } else {
-        res.statusCode = 404; // Not Found
-        res.end("Page not found");
+        response.status(Status.NOT_FOUND).json(Status.NOT_FOUND_MSG);
     }
+
 });
-
-server.listen(8082);
-
-// http.createServer(function(req, res) {
-//     var urlParsed = url.parse(req.url);
-//
-//     switch (urlParsed.pathname) {
-//         // case '/':
-//         //     sendFile("index.html", res);
-//         //     break;
-//
-//         // case '/subscribe':
-//         //     chat.subscribe(req, res);
-//         //     break;
-//
-//         case '/msg':
-//             var body = '';
-//
-//             req
-//                 .on('readable', function() {
-//                     var line = req.read();
-//                     if(line)
-//                         body += line;
-//
-//                     if (body.length > 1e4) {
-//                         res.statusCode = 413;
-//                         res.end("Your message is too big for my little chat");
-//                     }
-//                 })
-//                 .on('end', function() {
-//                     try {
-//                         body = JSON.parse(body);
-//                     } catch (e) {
-//                         res.statusCode = 400;
-//                         res.end("Bad Request");
-//                         return;
-//                     }
-//
-//                     chat.publish(body.message);
-//                     res.end("ok");
-//                 });
-//
-//             break;
-//
-//         default:
-//             res.statusCode = 404;
-//             res.end("Not found");
-//     }
-//
-//
-// }).listen(3000);
-
-
-// function sendFile(fileName, res) {
-//     var fileStream = fs.createReadStream(fileName);
-//     fileStream
-//         .on('error', function() {
-//             res.statusCode = 500;
-//             res.end("Server error");
-//         })
-//         .pipe(res)
-//         .on('close', function() {
-//             fileStream.destroy();
-//         });
-// }
+app.listen(8082, function() {
+    botError.sendMessage(config.telegram_chat_id, "Telegram service start");
+});
