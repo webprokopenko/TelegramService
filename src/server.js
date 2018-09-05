@@ -18,9 +18,9 @@ app.get("/message", function(req, res){
 
     if (req.query.content) {
         botError.sendMessage(config.telegram_chat_id, req.query.content);
-        response.status(Status.OK).json(Status.OK_MSG);
+        res.status(Status.OK).json(Status.OK_MSG);
     } else {
-        response.status(Status.NOT_FOUND).json(Status.NOT_FOUND_MSG);
+        res.status(Status.NOT_FOUND).json(Status.NOT_FOUND_MSG);
     }
 
 });

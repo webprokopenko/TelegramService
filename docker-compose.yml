@@ -1,13 +1,13 @@
 version: '3'
 services:
-
-    telegram:
+    telegramservice:
       build:
         context: ./
         dockerfile: ./Dockerfile
       user: "node"
       environment:
         - NODE_ENV=production
+        - NODE_PORT=8082
       volumes:
         - ./src:/home/node/app/src
       expose:

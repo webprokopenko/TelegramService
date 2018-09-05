@@ -1,7 +1,7 @@
 {
-  "name": "tele-message",
+  "name": "",
   "version": "0.1.0",
-  "description": "Node server for KevinGaudin's monsterids",
+  "description": "",
   "main": "./src/server.js",
   "dependencies": {
     "node-telegram-bot-api": "^0.30.0",
@@ -9,8 +9,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon ./src/server.js"
   },
-  "author": "Adrian Mouat",
-  "license": "UNLICENSED"
+  "author": "",
+  "license": ""
 }
