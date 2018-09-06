@@ -1,9 +1,11 @@
-var express = require("express");
-var app = express();
-
+const express = require("express");
+const bodyParser = require('body-parser');
 const config = require('./config/config.json');
 const telegramBot = require('node-telegram-bot-api');
-let botError = new telegramBot(config.telegram_token, {polling: true});
+const userController = require('./userController');
+
+const botError = new telegramBot(config.telegram_token, {polling: true});
+const app = express();
 
 const Status = {
     NOT_FOUND: 404,
@@ -13,17 +15,30 @@ const Status = {
     SERVER_ERROR: 500,
     SERVER_ERROR_MSG: '500 - Battery Error'
 };
+app.use(bodyParser.json({ type: 'text/plain' }));
+app.use(bodyParser.json({type: 'json'}));
+app.use(bodyParser.urlencoded({extended: true}));
 
-app.get("/message", function(req, res){
+app.post('/auth', async (req, res) => {
+    try {
+        let user = await userController.sign_in(req.body, '15m');
+        res.send(user);    
 
-    if (req.query.content) {
-        botError.sendMessage(config.telegram_chat_id, req.query.content);
-        res.status(Status.OK).json(Status.OK_MSG);
-    } else {
-        res.status(Status.NOT_FOUND).json(Status.NOT_FOUND_MSG);
+    } catch (error) {
+        res.status(401).send({'msg':'Unauthorized user'});
     }
+})
+app.get('/message', async(req, res) => {
+    try {
+        let user = await userController.getUserFromHead(req);
+        botError.sendMessage(config.telegram_chat_id,  `${user.serverName}  ${req.query.message}`);
+        res.send(user);
+    } catch (error) {
+        res.status(401).send({'msg':'Unauthorized user'});
+    }
+})
 
-});
+
 app.listen(8082, function() {
     botError.sendMessage(config.telegram_chat_id, "Telegram service start");
 });
